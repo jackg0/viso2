@@ -20,7 +20,7 @@ class MonoOdometer : public OdometerBase
 
 private:
 
-  boost::shared_ptr<VisualOdometryMono> visual_odometer_;
+  std::shared_ptr<VisualOdometryMono> visual_odometer_;
   VisualOdometryMono::parameters visual_odometer_params_;
 
   image_transport::CameraSubscriber camera_sub_;

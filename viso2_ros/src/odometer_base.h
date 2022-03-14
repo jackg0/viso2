@@ -43,8 +43,8 @@ private:
   ros::Time last_update_time_;
 
   // covariances
-  boost::array<double, 36> pose_covariance_;
-  boost::array<double, 36> twist_covariance_;
+  std::array<double, 36> pose_covariance_;
+  std::array<double, 36> twist_covariance_;
 
 public:
 
@@ -73,8 +73,8 @@ public:
 
     integrated_pose_.setIdentity();
 
-    pose_covariance_.assign(0.0);
-    twist_covariance_.assign(0.0);
+    std::fill(std::begin(pose_covariance_), std::end(pose_covariance_), 0.0);
+    std::fill(std::begin(twist_covariance_), std::end(twist_covariance_), 0.0);
   }
 
 protected:
@@ -89,12 +89,12 @@ protected:
     return sensor_frame_id_;
   }
 
-  void setPoseCovariance(const boost::array<double, 36>& pose_covariance)
+  void setPoseCovariance(const std::array<double, 36>& pose_covariance)
   {
     pose_covariance_ = pose_covariance;
   }
 
-  void setTwistCovariance(const boost::array<double, 36>& twist_covariance)
+  void setTwistCovariance(const std::array<double, 36>& twist_covariance)
   {
     twist_covariance_ = twist_covariance;
   }
@@ -162,8 +162,12 @@ protected:
       }
     }
 
-    odometry_msg.pose.covariance = pose_covariance_;
-    odometry_msg.twist.covariance = twist_covariance_;
+    std::copy(pose_covariance_.begin(),
+        pose_covariance_.end(),
+        odometry_msg.pose.covariance.begin());
+    std::copy(twist_covariance_.begin(),
+        twist_covariance_.end(),
+        odometry_msg.twist.covariance.begin());
     odom_pub_.publish(odometry_msg);
 
     geometry_msgs::PoseStamped pose_msg;

@@ -32,8 +32,8 @@ private:
   typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image, sensor_msgs::CameraInfo, sensor_msgs::CameraInfo> ApproximatePolicy;
   typedef message_filters::Synchronizer<ExactPolicy> ExactSync;
   typedef message_filters::Synchronizer<ApproximatePolicy> ApproximateSync;
-  boost::shared_ptr<ExactSync> exact_sync_;
-  boost::shared_ptr<ApproximateSync> approximate_sync_;
+  std::shared_ptr<ExactSync> exact_sync_;
+  std::shared_ptr<ApproximateSync> approximate_sync_;
   int queue_size_;
 
   // for sync checking
@@ -101,12 +101,22 @@ protected:
 
     // Resolve topic names
     ros::NodeHandle nh;
-    std::string stereo_ns = nh.resolveName("stereo");
-    std::string left_topic = ros::names::clean(stereo_ns + "/left/" + nh.resolveName("image"));
-    std::string right_topic = ros::names::clean(stereo_ns + "/right/" + nh.resolveName("image"));
+    std::string stereo_ns{""};
+    std::string left_topic_suffix{""};
+    std::string right_topic_suffix{""};
+    std::string left_info_topic_suffix{""};
+    std::string right_info_topic_suffix{""};
 
-    std::string left_info_topic = stereo_ns + "/left/camera_info";
-    std::string right_info_topic = stereo_ns + "/right/camera_info";
+    local_nh.param<std::string>("stereo_node_name", stereo_ns, local_nh.getNamespace() + "/stereo");
+    local_nh.param<std::string>("left_image_rect_topic_suffix", left_topic_suffix, "/left/image_rect");
+    local_nh.param<std::string>("left_camera_info_topic_suffix", left_info_topic_suffix, "/left/image_rect/camera_info");
+    local_nh.param<std::string>("right_image_rect_topic_suffix", right_topic_suffix, "/right/image_rect");
+    local_nh.param<std::string>("right_camera_info_topic_suffix", right_info_topic_suffix, "/right/image_rect/camera_info");
+
+    const auto left_topic = stereo_ns + left_topic_suffix;
+    const auto left_info_topic = stereo_ns + left_info_topic_suffix;
+    const auto right_topic = stereo_ns + right_topic_suffix;
+    const auto right_info_topic = stereo_ns + right_info_topic_suffix;
 
     // Subscribe to four input topics.
     ROS_INFO("Subscribing to:\n\t* %s\n\t* %s\n\t* %s\n\t* %s",

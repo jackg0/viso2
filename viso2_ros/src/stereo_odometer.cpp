@@ -20,21 +20,21 @@ namespace viso2_ros
 {
 
 // some arbitrary values (0.1m^2 linear cov. 10deg^2. angular cov.)
-static const boost::array<double, 36> STANDARD_POSE_COVARIANCE =
+static const std::array<double, 36> STANDARD_POSE_COVARIANCE =
 { { 0.1, 0, 0, 0, 0, 0,
     0, 0.1, 0, 0, 0, 0,
     0, 0, 0.1, 0, 0, 0,
     0, 0, 0, 0.17, 0, 0,
     0, 0, 0, 0, 0.17, 0,
     0, 0, 0, 0, 0, 0.17 } };
-static const boost::array<double, 36> STANDARD_TWIST_COVARIANCE =
+static const std::array<double, 36> STANDARD_TWIST_COVARIANCE =
 { { 0.002, 0, 0, 0, 0, 0,
     0, 0.002, 0, 0, 0, 0,
     0, 0, 0.05, 0, 0, 0,
     0, 0, 0, 0.09, 0, 0,
     0, 0, 0, 0, 0.09, 0,
     0, 0, 0, 0, 0, 0.09 } };
-static const boost::array<double, 36> BAD_COVARIANCE =
+static const std::array<double, 36> BAD_COVARIANCE =
 { { 9999, 0, 0, 0, 0, 0,
     0, 9999, 0, 0, 0, 0,
     0, 0, 9999, 0, 0, 0,
@@ -48,7 +48,7 @@ class StereoOdometer : public StereoProcessor, public OdometerBase
 
 private:
 
-  boost::shared_ptr<VisualOdometryStereo> visual_odometer_;
+  std::shared_ptr<VisualOdometryStereo> visual_odometer_;
   VisualOdometryStereo::parameters visual_odometer_params_;
 
   ros::Publisher point_cloud_pub_;
